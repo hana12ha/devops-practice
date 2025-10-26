@@ -1,0 +1,39 @@
+#!/bin/bash
+
+echo "===Starting System Update RedHat 9 ...==="
+
+dnf update -y
+
+if [ $? -eq 0 ];then
+	echo "✅ System update completed successfully."
+else
+	echo "❌ System update failed. Check dnf logs."
+	exit 1
+fi
+
+# Install nginx if not installed.
+if ! rpm -qa | grep nginx; then
+	echo "🔍 NGINX not found in RPM database — installing..."
+	sudo dnf -y install nginx
+	if [ $? -eq 0 ];then
+		echo "✅ nginx installed successfully."
+	else
+		echo "❌ nginx installation failed. Check dnf logs."
+		exit 1
+	fi
+else
+	echo "✅ NGINX package already installed."
+fi
+
+#Enable and start nginx
+
+sudo systemctl enable --now nginx
+sudo systemctl restart nginx
+if systemctl is-active --quiet nginx; then
+    echo "✅ NGINX is running."
+else
+    echo "❌ NGINX failed to start. Check with: sudo systemctl status nginx"
+    exit 1
+fi
+
+echo "===== All tasks completed successfully ====="
