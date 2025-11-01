@@ -1,0 +1,107 @@
+Docker:
+$ cat Dockerfile
+FROM oraclelinux:7
+
+RUN mkdir /home/hanane
+
+ENV USER=Hanane-dev
+ENV SHELL=/bin/bash
+
+
+$ docker build -t ol7 .
+[+] Building 0.5s (6/6) FINISHED                                     docker:default
+ => [internal] load build definition from Dockerfile                           0.0s
+ => => transferring dockerfile: 182B                                           0.0s
+ => [internal] load metadata for docker.io/library/oraclelinux:7               0.4s
+ => [internal] load .dockerignore                                              0.0s
+ => => transferring context: 2B                                                0.0s
+ => [1/2] FROM docker.io/library/oraclelinux:7@sha256:767c93c07b1fa621ae56d1f  0.0s
+ => CACHED [2/2] RUN mkdir /home/hanane                                        0.0s
+ => exporting to image                                                         0.0s
+ => => exporting layers                                                        0.0s
+ => => writing image sha256:18465902b8dabb3508b6839c79672ae36f8a716ff538b2d38  0.0s
+ => => naming to docker.io/library/ol7                                         0.0s
+
+$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+ol7           latest    18465902b8da   2 minutes ago   260MB
+ol8           latest    a39cf356a737   11 days ago     251MB
+python        3.9       695464deb1ba   3 weeks ago     1.09GB
+hello-world   latest    1b44b5a3e06a   2 months ago    10.1kB
+
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+$ docker run -itd --name cont-ol8
+docker: 'docker run' requires at least 1 argument
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+See 'docker run --help' for more information
+$ docker run -itd --name cont-ol8 ol8
+ecc****************************************************************************************************************
+
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES
+ecc34d1acea8   ol8       "/bin/bash"   6 seconds ago   Up 5 seconds             cont-ol8
+$ docker exec -it cont-ol8 /bin/bash
+[root@ecc**** /]# pwd
+/
+[root@ecc******** /]# cd home/
+[root@ecc***** home]# ls
+[root@ecc***** home]# ls -la
+total 0
+drwxr-xr-x. 2 root root 6 Oct  9  2021 .
+drwxr-xr-x. 1 root root 6 Nov  1 16:33 ..
+[root@ecc***** home]# uname -ra
+Linux ecc34d1acea8 5.14.0-570.55.1.el9_6.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Oct 14 01:03:55 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+[root@ecc***** home]# ^C
+[root@ecc****** home]# cd ..
+[root@ecc****** /]# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+
+[root@ecc***** /]# cat /etc/os-release
+NAME="Oracle Linux Server"
+VERSION="8.10"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="8.10"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Oracle Linux Server 8.10"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:oracle:linux:8:10:server"
+HOME_URL="https://linux.oracle.com/"
+BUG_REPORT_URL="https://github.com/oracle/oracle-linux"
+
+ORACLE_BUGZILLA_PRODUCT="Oracle Linux 8"
+ORACLE_BUGZILLA_PRODUCT_VERSION=8.10
+ORACLE_SUPPORT_PRODUCT="Oracle Linux"
+ORACLE_SUPPORT_PRODUCT_VERSION=8.10
+[root@ecc34d1acea8 /]# exit
+exit
+[ec2-user@ip-172-31-35-174 devops-practice]$ uname -ra
+Linux ip-172-31-35-174.eu-north-1.compute.internal 5.14.0-570.55.1.el9_6.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Oct 14 01:03:55 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+[ec2-user@ip-172-31-35-174 devops-practice]$ docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES
+ecc34d1acea8   ol8       "/bin/bash"   21 minutes ago   Up 21 minutes             cont-ol8
+[ec2-user@ip-172-31-35-174 devops-practice]$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+ol7           latest    18465902b8da   50 minutes ago   260MB
+ol8           latest    a39cf356a737   11 days ago      251MB
+python        3.9       695464deb1ba   3 weeks ago      1.09GB
+hello-world   latest    1b44b5a3e06a   2 months ago     10.1kB
+
+#pull ol7 image and run it in a container
+[ec2-user@ip-172-31-35-174 devops-practice]$ docker run -it --name ol7-cont 18465902b8da
+[root@1a850791fc68 /]# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@1a850791fc68 /]# cd /home/
+[root@1a850791fc68 home]# ls
+hanane
+
+[root@1a850791fc68 home]# echo $USER
+Hanane-dev
+[root@1a850791fc68 home]# echo $SHELL
+/bin/bash
