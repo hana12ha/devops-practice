@@ -153,4 +153,78 @@ python       3.9       695464deb1ba   3 weeks ago      1.09GB
 CONTAINER ID   IMAGE        COMMAND                  CREATED          STATUS          PORTS                                     NAMES
 05bfd9c0ca2c   nginx-app1   "/usr/sbin/nginx -g …"   30 seconds ago   Up 29 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   rhel-nginx-app1
 85edefa689f8   nginx-app3   "/usr/sbin/nginx -g …"   22 minutes ago   Up 22 minutes   0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   rhel9-nginx-app3
-ecc34d1acea8   ol8          "/bin/bash"              2 days ago       Up 2 days                                                 cont-ol8
+ecc34d1acea8   ol8          "/bin/bash"              2 days ago       Up 2 days    cont-ol8
+
+##APACHE
+# cat Dockerfile
+FROM registry.access.redhat.com/ubi8/ubi:latest
+
+#Add metadata to the image
+LABEL maintainer="abidhanane07@gmail.com"
+LABEL Creator="Hanane"
+LABEL version="1.0"
+
+RUN dnf install httpd -y && dnf update httpd -y || echo "APACHE Installation Failed"
+COPY index.html /var/www/html/
+EXPOSE 80
+
+#Run procs as non root user
+#RUN useradd -ms /bin/bash appuser
+#USER appuser
+
+#Start APACHE in the foreground so the container won't exit
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+
+]# docker build -t apache-appv .                    [+] Building 0.6s (8/8) FINISHED                                 docker:default
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 569B                                       0.0s
+ => [internal] load metadata for registry.access.redhat.com/ubi8/ubi:late  0.5s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/3] FROM registry.access.redhat.com/ubi8/ubi:latest@sha256:bcfca5f2  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 91B                                           0.0s
+ => CACHED [2/3] RUN dnf install httpd -y && dnf update httpd -y || echo   0.0s
+ => CACHED [3/3] COPY index.html /var/www/html/                            0.0s
+ => exporting to image                                                     0.0s
+ => => exporting layers                                                    0.0s
+ => => writing image sha256:a6c9d0d60b9af92252e66f515e22552b2242a779c5fb8  0.0s
+ => => naming to docker.io/library/apache-appv                             0.0s
+ # docker images
+REPOSITORY     TAG       IMAGE ID       CREATED          SIZE
+apache-appv2   latest    2be43640a53c   35 minutes ago   233MB
+apache-appv3   latest    ee34f2439049   35 minutes ago   233MB
+apache-appv4   latest    c4a0c85ca82f   35 minutes ago   233MB
+apache-appv    latest    a6c9d0d60b9a   35 minutes ago   233MB
+apache-app     latest    2388e7972746   54 minutes ago   198MB
+apache-appv1   latest    2388e7972746   54 minutes ago   198MB
+nginx-app3     latest    721f4d78275d   2 hours ago      238MB
+nginx-app1     latest    9853ae298772   2 days ago       238MB
+ol7            latest    18465902b8da   2 days ago       260MB
+ol8            latest    a39cf356a737   2 weeks ago      251MB
+python         3.9       695464deb1ba   3 weeks ago      1.09GB
+
+]# docker run -dit -p 8084:80 --name rhel-apache apache-appv
+8dd0ce67eeff4cfeff3f3d483909e43556c52b945e0afda2a9b02339202b7a16
+
+]# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED             STATUS             PORTS                                     NAMES
+8dd0ce67eeff   apache-appv    "/usr/sbin/httpd -D …"   4 minutes ago       Up 4 minutes       0.0.0.0:8084->80/tcp, [::]:8084->80/tcp   rhel-apache
+e2de4fb6f2c9   apache-appv4   "bash"                   15 minutes ago      Up 15 minutes      80/tcp                                    rhel-apache4
+37ad3a1f4f6d   apache-appv4   "/usr/sbin/httpd -D …"   23 minutes ago      Up 23 minutes      0.0.0.0:8083->80/tcp, [::]:8083->80/tcp   rhel-apache3
+a7464647fe70   apache-appv2   "bash"                   31 minutes ago      Up 31 minutes      0.0.0.0:8082->80/tcp, [::]:8082->80/tcp   rhel-apache2
+54f29f221553   nginx-app1     "/usr/sbin/nginx -g …"   About an hour ago   Up About an hour   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   rhel-nginx-app1
+85edefa689f8   nginx-app3     "/usr/sbin/nginx -g …"   2 hours ago         Up 2 hours         0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   rhel9-nginx-app3
+ecc34d1acea8   ol8            "/bin/bash"              2 days ago          Up 2 days                                                    cont-ol8
+# curl http://localhost:8084
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Apache Site</title>
+</head>
+<body>
+  <h1>Hello from Apache in Docker!</h1>
+</body>
+</html>
+
+
