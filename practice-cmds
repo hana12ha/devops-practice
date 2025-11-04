@@ -81,12 +81,12 @@ ORACLE_SUPPORT_PRODUCT="Oracle Linux"
 ORACLE_SUPPORT_PRODUCT_VERSION=8.10
 [root@ecc34d1acea8 /]# exit
 exit
-[ec2-user@ip-172-31-35-174 devops-practice]$ uname -ra
+$ uname -ra
 Linux ip-172-31-35-174.eu-north-1.compute.internal 5.14.0-570.55.1.el9_6.x86_64 #1 SMP PREEMPT_DYNAMIC Tue Oct 14 01:03:55 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
-[ec2-user@ip-172-31-35-174 devops-practice]$ docker ps
+$ docker ps
 CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES
 ecc34d1acea8   ol8       "/bin/bash"   21 minutes ago   Up 21 minutes             cont-ol8
-[ec2-user@ip-172-31-35-174 devops-practice]$ docker images
+$ docker images
 REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
 ol7           latest    18465902b8da   50 minutes ago   260MB
 ol8           latest    a39cf356a737   11 days ago      251MB
@@ -94,14 +94,63 @@ python        3.9       695464deb1ba   3 weeks ago      1.09GB
 hello-world   latest    1b44b5a3e06a   2 months ago     10.1kB
 
 #pull ol7 image and run it in a container
-[ec2-user@ip-172-31-35-174 devops-practice]$ docker run -it --name ol7-cont 18465902b8da
-[root@1a850791fc68 /]# ls
+$ docker run -it --name ol7-cont 18465902b8da
+# ls
 bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-[root@1a850791fc68 /]# cd /home/
-[root@1a850791fc68 home]# ls
+# cd /home/
+# ls
 hanane
 
-[root@1a850791fc68 home]# echo $USER
+# echo $USER
 Hanane-dev
-[root@1a850791fc68 home]# echo $SHELL
+# echo $SHELL
 /bin/bash
+
+==
+]# cat Dockerfile
+#FROM registry.redhat.io/rhel9/rhel-9:latest
+FROM registry.access.redhat.com/ubi9/ubi:latest
+
+#RUN yum-config-manager --enable ol7_appstream
+#RUN yum install -y yum-utils epel-release
+RUN yum install nginx -y && yum update nginx -y || echo "nginx Installation Failed"
+#COPY index.html/ /usr/share/nginx/html/
+EXPOSE 80
+
+#Start nginx in the foreground so the container won't exit
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
+
+]# docker build -t nginx-app1 .
+[+] Building 0.5s (6/6) FINISHED                                                                                                                             docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                   0.0s
+ => => transferring dockerfile: 522B                                                                                                                                   0.0s
+ => [internal] load metadata for registry.access.redhat.com/ubi9/ubi:latest                                                                                            0.4s
+ => [internal] load .dockerignore                                                                                                                                      0.0s
+ => => transferring context: 2B                                                                                                                                        0.0s
+ => [1/2] FROM registry.access.redhat.com/ubi9/ubi:latest@sha256:dec374e05cc13ebbc0975c9f521f3db6942d27f8ccdf06b180160490eef8bdbc                                      0.0s
+ => CACHED [2/2] RUN yum install nginx -y && yum update nginx -y || echo "nginx Installation Failed"                                                                   0.0s
+ => exporting to image                                                                                                                                                 0.0s
+ => => exporting layers                                                                                                                                                0.0s
+ => => writing image sha256:9853ae2987728da77b38ccf334e61c4b695ad663740a8b97b3c56f992952d5be                                                                           0.0s
+ => => naming to docker.io/library/nginx-app1                                                                                                                          0.0s## docker images
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+nginx-app3   latest    721f4d78275d   33 minutes ago   238MB
+nginx-app1   latest    9853ae298772   2 days ago       238MB
+ol7          latest    18465902b8da   2 days ago       260MB
+ol8          latest    a39cf356a737   2 weeks ago      251MB
+python       3.9       695464deb1ba   3 weeks ago      1.09GB
+# docker run -itd -p 8080:80 -v index.html:/usr/share/nginx/html --name rhel-nginx-app1 nginx-app1
+05bfd9c0ca2c5e9b0cb43500a53293629806ca6a7cd72bc8df1010406b3cfd77
+[root@ip-172-31-35-174 nginx]# docker images
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+nginx-app3   latest    721f4d78275d   33 minutes ago   238MB
+nginx-app1   latest    9853ae298772   2 days ago       238MB
+ol7          latest    18465902b8da   2 days ago       260MB
+ol8          latest    a39cf356a737   2 weeks ago      251MB
+python       3.9       695464deb1ba   3 weeks ago      1.09GB
+
+]# docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+05bfd9c0ca2c   nginx-app1   "/usr/sbin/nginx -g …"   30 seconds ago   Up 29 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   rhel-nginx-app1
+85edefa689f8   nginx-app3   "/usr/sbin/nginx -g …"   22 minutes ago   Up 22 minutes   0.0.0.0:8081->80/tcp, [::]:8081->80/tcp   rhel9-nginx-app3
+ecc34d1acea8   ol8          "/bin/bash"              2 days ago       Up 2 days                                                 cont-ol8

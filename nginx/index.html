@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le Gourmet – Fine Dining Restaurant</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background-color: #fffaf6;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #2c2c2c;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    nav {
+      background: #e7b45a;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    nav a {
+      color: #2c2c2c;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      color: white;
+    }
+    .hero {
+      background: url('https://images.unsplash.com/photo-1600891963937-8ad3c5478d1c?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.7);
+    }
+    .hero h2 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 1.3rem;
+    }
+    section {
+      padding: 50px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    .dish {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: 0.3s;
+    }
+    .dish:hover {
+      transform: scale(1.02);
+    }
+    .dish img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .dish h3 {
+      padding: 15px;
+      background: #e7b45a;
+      color: #2c2c2c;
+    }
+    .dish p {
+      padding: 0 15px 15px 15px;
+    }
+    footer {
+      background: #2c2c2c;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Le Gourmet</h1>
+    <p>Fine Dining Restaurant</p>
+  </header>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#menu">Menu</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="hero" id="home">
+    <h2>Welcome to Le Gourmet</h2>
+    <p>Experience exquisite flavors and elegant ambiance.</p>
+  </div>
+
+  <section id="menu">
+    <h2 style="text-align:center; margin-bottom: 30px;">Our Signature Dishes</h2>
+    <div class="menu">
+      <div class="dish">
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=600&q=80" alt="Steak" />
+        <h3>Grilled Ribeye Steak</h3>
+        <p>Juicy, tender steak served with roasted vegetables and our house sauce.</p>
+      </div>
+      <div class="dish">
+        <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=600&q=80" alt="Pasta" />
+        <h3>Homemade Truffle Pasta</h3>
+        <p>Fresh handmade pasta tossed with black truffle cream and parmesan.</p>
+      </div>
+      <div class="dish">
+        <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=600&q=80" alt="Dessert" />
+        <h3>Chocolate Lava Cake</h3>
+        <p>Rich molten chocolate cake served warm with vanilla ice cream.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="text-align:center;">
+    <h2>Contact Us</h2>
+    <p>📍 45 Rue de la Paix, Paris, France</p>
+    <p>📞 +33 XX XXX XX XX</p>
+    <p>📧 contact@legourmet.fr</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Le Gourmet Restaurant | Designed with ❤️ by Hanane</p>
+  </footer>
+</body>
+</html>
+
