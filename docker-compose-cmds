@@ -1,0 +1,82 @@
+## docker compose up
+[+] Running 37/37
+ ✔ wordpress Pulled                                                       18.1s
+ ✔ db Pulled                                                              13.2s
+
+
+
+
+
+
+
+
+
+
+
+[+] Running 5/5
+ ✔ Network devops-practice_default  C...                                   0.0s
+ ✔ Volume devops-practice_wd_files  C...                                   0.0s
+ ✔ Volume devops-practice_db_data   Cr...                                  0.0s
+ ✔ Container mysql_database         Created                                3.3s
+ ✔ Container wd-front               Created                                0.0s
+Attaching to mysql_database, wd-front
+mysql_database  | 2025-11-05 15:00:27+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.44-1.el9 started.
+mysql_database  | 2025-11-05 15:00:27+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+mysql_database  | 2025-11-05 15:00:27+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.44-1.el9 started.
+wd-front        | WordPress not found in /var/www/html - copying now...
+mysql_database  | 2025-11-05 15:00:27+00:00 [Note] [Entrypoint]: Initializing database files
+mysql_database  | 2025-11-05T15:00:27.930346Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+mysql_database  | 2025-11-05T15:00:27.930437Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.44) initializing of server in progress as process 79
+mysql_database  | 2025-11-05T15:00:27.943850Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+wd-front        | Complete! WordPress has been successfully copied to /var/www/html
+wd-front        | No 'wp-config.php' found in /var/www/html, but 'WORDPRESS_...' variables supplied; copying 'wp-config-docker.php' (WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_PASSWORD WORDPRESS_DB_USER)
+wd-front        | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message
+
+...
+# docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+wordpress    latest    6aaaab8dc988   31 hours ago   734MB
+mysql        8.0       34178dbaefd0   2 weeks ago    783MB
+#docker ps
+CONTAINER ID   IMAGE              COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+9332791a0847   wordpress:latest   "docker-entrypoint.s…"   7 minutes ago   Up 7 minutes   0.0.0.0:8000->80/tcp, [::]:8000->80/tcp   wd-front
+8de84165c300   mysql:8.0          "docker-entrypoint.s…"   7 minutes ago   Up 7 minutes   3306/tcp, 33060/tcp                       mysql_database
+#cd devops-practice/
+#cat docker-compose.yml
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_database
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_USER: hanane
+      MYSQL_PASSWORD: *****
+      MYSQL_DATABASE: ********
+      MYSQL_ROOT_PASSWORD: *****
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    container_name: wd-front
+    volumes:
+      - wd_files:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: hanane
+      WORDPRESS_DB_PASSWORD: **********
+      WORDPRESS_DB_NAME: **********
+
+volumes:
+  wd_files:
+  db_data:
+]# docker volume ls
+DRIVER    VOLUME NAME
+local     devops-practice_db_data
+local     devops-practice_wd_files
+
